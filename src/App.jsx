@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./Auth/Login"
+import Register  from "./Auth/Register";
 import Home from "./Pages/Home"
 import { useAuth } from "./contexts/Authcontext";
 import axios from 'axios';
@@ -14,6 +15,7 @@ function App() {
       <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
           </Routes>
       </BrowserRouter>
