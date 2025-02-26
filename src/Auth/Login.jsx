@@ -18,7 +18,7 @@ const Login = () => {
   {
     try{
       console.log("Login payload",payload);
-        const data=await ApiController(backendUrl,"/login",payload);
+        const data=await ApiController(backendUrl,"login",payload);
         if(data)
         {
             setUser(payload.email);
