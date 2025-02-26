@@ -15,6 +15,7 @@ const ApiController = async (url, endpoint, body, method = 'POST', token = null)
             method: method,
             data: body,
             headers: headers,
+            withCredentials: true,
         });
 
         return response.data;
