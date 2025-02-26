@@ -20,7 +20,7 @@ const Home = () => {
   });
 
   React.useEffect(() => {
-    console.log("User: "+ Cookies.get('csrf_access_token'));
+    console.log(token,Cookies);
     if (!user) {
       navigate('/login');
     }
