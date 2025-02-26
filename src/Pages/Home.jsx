@@ -17,27 +17,14 @@ const Home = () => {
     exc: 'NSE',
     stp: 'intraday'
   });
-
   const [data, setData] = React.useState(null);
 
   React.useEffect(() => {
     if (!user) {
-      // navigate('/login');
+      navigate('/login');
     }
   }, [user, navigate]);
 
-  const cleanJsonString = (data) => {
-    try {
-        // Parse the JSON string to an object
-        let parsedData = JSON.parse(data);
-
-        // Convert it back to a string with proper formatting
-        return JSON.stringify(parsedData, null, 2); // Pretty print with indentation
-    } catch (error) {
-        console.error("Invalid JSON format:", error);
-        return null;
-    }
-};
 
 
   const handleSubmit = async (e) => {
@@ -46,15 +33,10 @@ const Home = () => {
 
     try {
       console.log(user);
-      const response = await ApiController(backendUrl, 'technical', formData, 'post',token);
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Technical analysis data:', data);
-        setData(cleanJsonString(response.data));
-        setLoading(false);
-        print(data)
-      }
+      const response = await ApiController(backendUrl, 'technical', formData, 'post',token); 
+      const res= JSON.parse(response.data);
+      setData(res)
+      setLoading(false);
     } catch (error) {
       console.error('Technical analysis request failed:', error);
     } finally {
@@ -159,20 +141,20 @@ const Home = () => {
           data && (
             <div className='bg-white :bg-gray-800 rounded-lg shadow-lg p-8 pt-10'>
                 <div className="flex items-center space-x-3 mb-8">
-                  <LineChart className="h-8 w-8 text-indigo-600 :text-indigo-400" />
+            
                   <h2 className="text-2xl font-bold text-gray-900 :text-white">
-                    Technical Analysis Result
+                   Result
                   </h2>
                 </div>
-                <pre className="text-sm overflow-x-auto :bg-gray-700 :text-white p-4 rounded-lg">
-                    <h2>Position : {data?.Position}</h2>
+                <div className="text-sm overflow-x-auto p-4 rounded-lg flex flex-col gap-5">
+                    <h2 className='text-xl font-bold'>Position : <span className='text-lg font-medium'>{data?.Position}</span> </h2>
                     <div className='flex justify-between'>
-                      <h2>Enrty : {data?.Entry}</h2>
-                      <h2>Target : {data?.Target}</h2>
-                      <h2>Stoploss : {data?.Stoploss}</h2>
+                      <h2 className='text-xl font-bold'>Enrty :  <span className='text-lg font-medium'>{data?.Entry}</span></h2>
+                      <h2 className='text-xl font-bold'>Target :  <span className='text-lg font-medium'>{data?.Target}</span></h2>
+                      <h2 className='text-xl font-bold'>Stoploss :  <span className='text-lg font-medium'>{data?.Stoploss}</span></h2>
                     </div>
-                    <p>Reason: {data.Reason}</p>
-                </pre>
+                    <p className='text-xl font-bold'>Reason:  <span className='text-lg font-medium'>{data.Reason}</span></p>
+                </div>
             </div>
           )
         }

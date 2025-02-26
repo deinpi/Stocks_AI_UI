@@ -20,7 +20,7 @@ const Register = () => {
             setError(true);
             return;
         }
-        const data=await ApiController(backendUrl,"/register",payload);
+        const data=await ApiController(backendUrl,"register",payload);
         if(data){
             navigation("/login");
         }
