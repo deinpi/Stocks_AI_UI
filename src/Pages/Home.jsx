@@ -30,7 +30,7 @@ const Home = () => {
 
     try {
       console.log(user);
-      const response = await ApiController(backendUrl, '/technical', formData, 'post',token);
+      const response = await ApiController(backendUrl, 'technical', formData, 'post',token);
       
       if (response.ok) {
         const data = await response.json();
