@@ -29,7 +29,8 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+    const Ctoken = Cookies.get('csrf_access_token')
+    console.log("Token :",Ctoken)
     try {
       console.log(user);
       const response = await ApiController(backendUrl, '/technical', formData, token);
