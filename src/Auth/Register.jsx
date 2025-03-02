@@ -6,6 +6,7 @@ import { TrendingUp } from 'lucide-react';
 const Register = () => {
   const navigation= useNavigate();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const register_url = import.meta.env.VITE_URL_REGISTER;
   const [Cpassword,setCPassword]=useState("");
   const [error, setError]= useState(false);
   const [payload,setPayload]=useState({
@@ -20,7 +21,7 @@ const Register = () => {
             setError(true);
             return;
         }
-        const data=await ApiController(backendUrl,"register",payload);
+        const data=await ApiController(backendUrl,register_url,payload);
         if(data){
             navigation("/login");
         }

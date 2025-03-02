@@ -2,6 +2,9 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./Auth/Login"
 import Register  from "./Auth/Register";
+import ForgotPassword from "./Auth/ForgotPassword";
+import ResetPassword from "./Auth/ResetPassword";
+import { ToastContainer } from 'react-toastify';
 import Home from "./Pages/Home"
 import { useAuth } from "./contexts/Authcontext";
 import axios from 'axios';
@@ -12,11 +15,25 @@ function App() {
   const {darkMode} = useAuth();
   return (
     <div className={clsx(darkMode && 'dark')}>
+      <ToastContainer position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick={false}
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          // transition={Bounce}
+      />
       <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/forgotPass" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>
       </BrowserRouter>
     </div>
