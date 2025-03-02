@@ -9,6 +9,7 @@ import ApiController from '../controlers/ApiControler';
 
 const Home = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const technical_url = import.meta.env.VITE_URL_TECHNICAL;
   const navigate = useNavigate();
   const {user,token}=useAuth();
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ const Home = () => {
 
     try {
       console.log(user);
-      const response = await ApiController(backendUrl, 'technical', formData, 'post',token); 
+      const response = await ApiController(backendUrl, technical_url, formData, 'post',token); 
       const res= JSON.parse(response.data);
       setData(res)
       setLoading(false);

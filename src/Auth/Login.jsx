@@ -9,6 +9,7 @@ const Login = () => {
   // const {user,setUser}= useContext();
   const {user,setUser,setToken}=useAuth();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const login_url= import.meta.env.VITE_URL_LOGIN;
   const [payload,setPayload]=useState({
     email:"",
     password:"",
@@ -18,7 +19,7 @@ const Login = () => {
   {
     try{
       console.log("Login payload",payload);
-        const data=await ApiController(backendUrl,"login",payload);
+        const data=await ApiController(backendUrl,login_url,payload);
         if(data)
         {
             setUser(payload.email);
@@ -59,8 +60,9 @@ const Login = () => {
            className="px-3 py-1 font-thin text-gray-700 border rounded-lg w-[350px] h-[40px]"
            onChange={(e) => setPayload((prev) => ({ ...prev, password: e.target.value }))}
            />
+
           </div>
-          
+          <p className=" text-sm text-blue-800">Forgot Password ? <Link to={"/forgotPass"} >Click Here</Link></p>
           <button onClick={handleSubmit} className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md ">Login</button>
         </div>
         <p className="py-5 text-sm text-blue-800">Don't have an account? <Link to={"/register"} >Register</Link></p>
