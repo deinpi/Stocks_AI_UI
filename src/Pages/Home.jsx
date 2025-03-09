@@ -3,14 +3,14 @@ import {useNavigate} from "react-router-dom";
 import {Navbar} from "../UI/Navbar";
 import {LineChart, TrendingUp, Clock, Search} from "lucide-react";
 import Cookies from "js-cookie";
-import {useAuth} from "../contexts/Authcontext";
+import {useAuth} from "../contexts/AuthContext.jsx";
 import ApiController from "../controlers/ApiControler";
 import {Input} from "../UI/Input";
 import {Select} from "../UI/Select";
 import {Button} from "../UI/Button";
 import {Sidebar} from "../UI/Sidebar";
-import {formatCurrency} from "../lib/utils";
-import {useDashboard} from "../contexts/DashboardContext";
+import {formatCurrency} from "../lib/Utils.jsx";
+import {useDashboard} from "../contexts/DashboardContext.jsx";
 
 const Home = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;

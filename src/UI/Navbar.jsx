@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BarChart2, Moon, Sun, User as UserIcon, LogOut } from 'lucide-react';
-import { useAuth } from "../contexts/Authcontext";
+import { useAuth } from "../contexts/AuthContext.jsx";
 import { Button } from './Button';
 
 import Logo from './Logo';

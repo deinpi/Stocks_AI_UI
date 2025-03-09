@@ -6,7 +6,7 @@ import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
 import { ToastContainer } from 'react-toastify';
 import Home from "./Pages/Home"
-import { useAuth } from "./contexts/Authcontext";
+import { useAuth } from "./contexts/AuthContext.jsx";
 import axios from 'axios';
 import clsx from 'clsx'
 
