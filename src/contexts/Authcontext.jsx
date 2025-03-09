@@ -5,9 +5,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token,setToken] = useState(null);
-    const [darkMode, setDarkMode] = useState(() => {
-        return localStorage.getItem('darkMode') === 'true';
-    });
+    const [darkMode, setDarkMode] = useState(true);
 
     useEffect(() => {
         const token= localStorage.getItem('token');
