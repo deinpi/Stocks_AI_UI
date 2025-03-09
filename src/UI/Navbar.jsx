@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Moon, Sun, User as UserIcon, LogOut } from 'lucide-react';
+import { BarChart2, Moon, Sun, User as UserIcon, LogOut } from 'lucide-react';
 import { useAuth } from "../contexts/Authcontext";
+import { Button } from './Button';
+
 import Logo from './Logo';
 
 export const Navbar = () => {
   const navigate = useNavigate();
-  const [showDropdown, setShowDropdown] = React.useState(false);
   const { user, deleteUser, darkMode, toggleDarkMode } = useAuth();
 
   const handleLogout = () => {
@@ -15,50 +16,45 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className=" shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Logo />
-
-          <div className="flex items-center space-x-4">
-            {/* Dark Mode Toggle Button */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg cursor-pointer"
-            >
-              {darkMode ? (
-                <Sun className="h-5 w-5 text-yellow-400 " />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </button>
-
-            {/* User Dropdown */}
-            <div className="relative">
-              <button
-                onClick={() => setShowDropdown(!showDropdown)}
-                className="p-2 rounded-lg "
-              >
-                <UserIcon className="h-5 w-5 cursor-pointer " />
-              </button>
-
-              {showDropdown && (
-                <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg  ring-1 ring-black bg-white cursor-pointer">
-                  <div className="py-1">
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm cursor-pointer"
-                    >
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+    <div className="h-16 px-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center justify-between">
+      <div className="flex items-center space-x-2">
+        <BarChart2 className="h-6 w-6 text-blue-600 dark:text-blue-500" />
+        <span className="font-bold text-xl dark:text-white">Stonks AI</span>
       </div>
-    </nav>
+      
+      <div className="flex items-center space-x-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={toggleDarkMode}
+          className="rounded-full w-10 h-10 p-0"
+        >
+          {darkMode === 'true' ? <Sun size={20} /> : <Moon size={20} />}
+        </Button>
+        
+          {/* <div className="flex flex-col items-end">
+            <span className="text-sm font-medium">{user?.name}</span>
+            <span className="text-xs text-gray-500 dark:text-gray-500">{user?.email}</span>
+          </div>*/}
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            className="rounded-full w-10 h-10 p-0"
+          >
+            <UserIcon size={20} />
+          </Button> 
+          
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleLogout}
+            className="rounded-full w-10 h-10 p-0"
+          >
+            <LogOut size={20} />
+          </Button>
+        
+      </div>
+    </div>
   );
 };
