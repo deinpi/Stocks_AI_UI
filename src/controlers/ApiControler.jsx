@@ -11,8 +11,6 @@ const ApiController = async (url, endpoint, body, method = "POST", token = null)
             headers["Authorization"] = `Bearer ${token}`;
         }
 
-        console.log("API Request:", { url, endpoint });
-
         const response = await axios({
             url: `${url}${endpoint}`,
             method: method,

@@ -6,7 +6,7 @@ export const Input = forwardRef(
     return (
       <div className={cn('flex flex-col space-y-1.5', fullWidth ? 'w-full' : '')}>
         {label && (
-          <label className="text-sm font-medium text-black-700 dark:text-white-700">
+          <label className="text-sm font-medium text-black dark:text-white">
             {label}
           </label>
         )}

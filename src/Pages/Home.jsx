@@ -1,16 +1,16 @@
-import React, { use, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Navbar } from "../UI/Navbar";
-import { LineChart, TrendingUp, Clock, Search } from "lucide-react";
+import React, {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {Navbar} from "../UI/Navbar";
+import {LineChart, TrendingUp, Clock, Search} from "lucide-react";
 import Cookies from "js-cookie";
-import { useAuth } from "../contexts/Authcontext";
+import {useAuth} from "../contexts/Authcontext";
 import ApiController from "../controlers/ApiControler";
-import { Input } from "../UI/Input";
-import { Select } from "../UI/Select";
-import { Button } from "../UI/Button";
-import { Sidebar } from "../UI/Sidebar";
-import { formatCurrency } from "../lib/utils";
-import { useDashboard } from "../contexts/DashboardContext";
+import {Input} from "../UI/Input";
+import {Select} from "../UI/Select";
+import {Button} from "../UI/Button";
+import {Sidebar} from "../UI/Sidebar";
+import {formatCurrency} from "../lib/utils";
+import {useDashboard} from "../contexts/DashboardContext";
 
 const Home = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -19,26 +19,26 @@ const Home = () => {
   const get_history_url = import.meta.env.VITE_URL_GET_HISTORY;
 
   const navigate = useNavigate();
-  const { user, token } = useAuth();
-  const {analysisIndex, changeAnalysisIndex, historyData, setHistoryData} = useDashboard();
-  
+  const {user, token} = useAuth();
+  const {selectedAnalysis, setSelectedAnalysis, historyData, setHistoryData} = useDashboard();
+
   const [loading, setLoading] = useState(false);
 
   const [exchangeOptions, setExchangeOptions] = useState([]);
   const [setupOptions, setSetupOptions] = useState([]);
   const [tickerOptions, setTickerOptions] = useState([]);
 
-  
-
-
-  const [ticker, setTicker] = useState("SBIN");
-  const [exchange, setExchange] = useState("NSE");
-  const [setup, setSetup] = useState("intraday");
+  const [ticker, setTicker] = useState("");
+  const [exchange, setExchange] = useState("");
+  const [setup, setSetup] = useState("");
   const [formData, setFormData] = useState({
-    stk: "",
-    exc: "",
-    stp: "",
+    stk: "", exc: "", stp: "",
   });
+  const setupTypeMapping = {
+    intraday: 'Intraday',
+    swing: 'Swing',
+    longterm: 'Long Term'
+  };
 
   const [tickerSuggestions, setTickerSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -47,7 +47,6 @@ const Home = () => {
   const [data, setData] = React.useState(null);
 
   useEffect(() => {
-    console.log(user);
     if (!user) {
       navigate("/login");
     }
@@ -58,13 +57,7 @@ const Home = () => {
       if (!user || !token) return; // Ensure user is logged in and token is available
 
       try {
-        const response = await ApiController(
-          backendUrl,
-          fetch_inputs_url,
-          {},
-          "get",
-          token
-        );
+        const response = await ApiController(backendUrl, fetch_inputs_url, {}, "get", token);
         const data = await response;
 
         // Set the fetched data into state
@@ -109,7 +102,7 @@ const Home = () => {
         setTickerError('Please enter a ticker');
         return;
       }
-      
+
       if (!tickerOptions.includes(ticker)) {
         setTickerError('Please select a valid ticker from the suggestions');
         return;
@@ -117,52 +110,46 @@ const Home = () => {
       formData.stk = ticker;
       formData.exc = exchange;
       formData.stp = setup;
-      const response = await ApiController(
-        backendUrl,
-        technical_url,
-        formData,
-        "post",
-        token
-      );
+      const response = await ApiController(backendUrl, technical_url, formData, "post", token);
       const res = JSON.parse(response.data);
       setData(res);
       setLoading(false);
       fetchAnalysesHistory();
+
     } catch (error) {
       console.error("Technical analysis request failed:", error);
     } finally {
       setLoading(false);
+      setSelectedAnalysis(historyData[0])
     }
   };
 
   const fetchAnalysesHistory = async () => {
     try {
-      const response = await ApiController(
-        backendUrl,
-        get_history_url,
-        {},
-        "get",
-        token
-      );
+      const response = await ApiController(backendUrl, get_history_url, {}, "get", token);
       const res = response.data;
+      const parsedData = res.map(item => ({
+        ...item, result: JSON.parse(item.result)
+      }));
 
-      setHistoryData(res);
+      setHistoryData(parsedData);
+      setSelectedAnalysis(parsedData[0])
+
     } catch (error) {
       console.error("Fetch analysis history failed:", error);
     }
   };
 
-  return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
-      <Navbar />
+  return (<div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+      <Navbar/>
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar setData={setData}/>
+        <Sidebar/>
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
               <div className="flex items-center space-x-3 mb-8">
-                <LineChart className="h-8 w-8 text-indigo-600 :text-indigo-400" />
-                <h2 className="text-2xl font-bold text-gray-900 :text-white">
+                <LineChart className="h-8 w-8 text-indigo-600 :text-indigo-400"/>
+                <h2 className="text-2xl font-bold text-black dark:text-white">
                   Technical Analysis
                 </h2>
               </div>
@@ -173,24 +160,21 @@ const Home = () => {
                     label="Ticker"
                     placeholder="Enter stock ticker"
                     value={ticker}
-                    error = {tickerError}
+                    error={tickerError}
                     onChange={handleTickerChange}
                     fullWidth
-                    leftIcon={<Search size={16} />}
+                    leftIcon={<Search size={16}/>}
                   />
-                  {showSuggestions && tickerSuggestions.length > 0 && (
-                    <div className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                      {tickerSuggestions.map((suggestion) => (
-                        <div
+                  {showSuggestions && tickerSuggestions.length > 0 && (<div
+                      className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                      {tickerSuggestions.map((suggestion) => (<div
                           key={suggestion}
                           className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white"
                           onClick={() => handleSelectTicker(suggestion)}
                         >
                           {suggestion}
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                        </div>))}
+                    </div>)}
                 </div>
                 <Select
                   label="Exchange"
@@ -212,7 +196,7 @@ const Home = () => {
                 <Button
                   onClick={handleAnalyze}
                   isLoading={loading}
-                  leftIcon={<TrendingUp size={16} />}
+                  leftIcon={<TrendingUp size={16}/>}
                   size="lg"
                 >
                   Analyze
@@ -220,26 +204,21 @@ const Home = () => {
               </div>
             </div>
 
-            {data && (
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+            {selectedAnalysis && (<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
                 <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-6 py-4">
                   <div className="flex justify-between items-center">
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {formData.stk} ({formData.exc})
+                        {selectedAnalysis.user_input.ticker_name} ({selectedAnalysis.user_input.exchange})
                       </h3>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {formData.stp} Analysis
+                        {setupTypeMapping[selectedAnalysis.user_input.setup_type]} Analysis
                       </p>
                     </div>
                     <div
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        data?.Position === "Long"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
-                          : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
-                      }`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${selectedAnalysis.result.Position === "Long" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"}`}
                     >
-                      {data?.Position}
+                      {selectedAnalysis.result.Position}
                     </div>
                   </div>
                 </div>
@@ -251,7 +230,7 @@ const Home = () => {
                         Entry Price
                       </p>
                       <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                        {formatCurrency(data?.Entry)}
+                        {formatCurrency(selectedAnalysis.result.Entry)}
                       </p>
                     </div>
 
@@ -260,7 +239,7 @@ const Home = () => {
                         Target Price
                       </p>
                       <p className="text-xl font-semibold text-green-600 dark:text-green-400">
-                        {formatCurrency(data?.Target)}
+                        {formatCurrency(selectedAnalysis.result.Target)}
                       </p>
                     </div>
 
@@ -269,7 +248,7 @@ const Home = () => {
                         Stop Loss
                       </p>
                       <p className="text-xl font-semibold text-red-600 dark:text-red-400">
-                        {formatCurrency(data?.Stoploss)}
+                        {formatCurrency(selectedAnalysis.result.Stoploss)}
                       </p>
                     </div>
                   </div>
@@ -280,70 +259,16 @@ const Home = () => {
                     </h4>
                     <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
                       <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
-                        {data.Reason}
+                        {selectedAnalysis.result.Reason}
                       </p>
                     </div>
                   </div>
-
-                  {/* <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                  <h4 className="text-md font-medium mb-2 text-gray-900 dark:text-white">
-                    Rate this analysis (0-10)
-                  </h4>
-
-                  {currentAnalysis.feedbackScore !== null ? (
-                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg text-blue-800 dark:text-blue-300">
-                      <p>
-                        Thank you for your feedback! You rated this analysis:{" "}
-                        <span className="font-bold">
-                          {currentAnalysis.feedbackScore}/10
-                        </span>
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="flex items-center space-x-4">
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                          0
-                        </span>
-                        <input
-                          type="range"
-                          min="0"
-                          max="10"
-                          value={feedbackValue}
-                          onChange={(e) =>
-                            setFeedbackValue(parseInt(e.target.value))
-                          }
-                          className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
-                        />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                          10
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <div className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                          Your rating:{" "}
-                          <span className="font-bold">{feedbackValue}</span>
-                        </div>
-                        <Button
-                          onClick={() =>
-                            handleFeedbackSubmit(currentAnalysis.id)
-                          }
-                          size="sm"
-                        >
-                          Submit Feedback
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div> */}
                 </div>
-              </div>
-            )}
+              </div>)}
           </div>
         </div>
-        </div>
-        </div>
-  );
+      </div>
+    </div>);
 };
 
 export default Home;

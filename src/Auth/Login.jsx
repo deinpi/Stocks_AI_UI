@@ -18,7 +18,6 @@ const Login = () => {
   const handleSubmit= async()=>
   {
     try{
-      console.log("Login payload",payload);
         const data=await ApiController(backendUrl,login_url,payload);
         if(data)
         {

@@ -7,6 +7,7 @@ const DashboardContext = createContext();
 export const DashboardProvider = ({ children }) => {
   const [analysisIndex, setAnalysisIndex] = useState(0);
   const [historyData, setHistoryData] = useState([]);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
 
   const changeAnalysisIndex = (index) => {
     setAnalysisIndex(index);
@@ -19,6 +20,8 @@ export const DashboardProvider = ({ children }) => {
         changeAnalysisIndex,
         historyData,
         setHistoryData,
+        selectedAnalysis,
+        setSelectedAnalysis
       }}
     >
       {children}
