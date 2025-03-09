@@ -1,7 +1,7 @@
 import React,{useState,useContext} from "react";
 import { useNavigate,Link } from "react-router-dom";
 import ApiController from "../controlers/ApiControler";
-import {useAuth} from "../contexts/Authcontext";
+import {useAuth} from "../contexts/AuthContext.jsx";
 import { TrendingUp } from 'lucide-react';
 
 const Login = () => {

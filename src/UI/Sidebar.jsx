@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {ChevronLeft, ChevronRight, BarChart2} from "lucide-react";
-import {cn} from "../lib/utils";
-import {useDashboard} from "../contexts/DashboardContext";
+import {cn} from "../lib/Utils.jsx";
+import {useDashboard} from "../contexts/DashboardContext.jsx";
 
 export const Sidebar = ({className}) => {
   const [collapsed, setCollapsed] = useState(false);

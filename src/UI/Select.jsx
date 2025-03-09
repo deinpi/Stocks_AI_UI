@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { cn } from '../lib/utils';
+import { cn } from '../lib/Utils.jsx';
 import { ChevronDown } from 'lucide-react';
 
 export const Select = forwardRef(
