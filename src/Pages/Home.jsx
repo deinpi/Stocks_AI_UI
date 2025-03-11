@@ -148,7 +148,7 @@ const Home = () => {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
               <div className="flex items-center space-x-3 mb-8">
-                <LineChart className="h-8 w-8 text-indigo-600 :text-indigo-400"/>
+                <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-500"/>
                 <h2 className="text-2xl font-bold text-black dark:text-white">
                   Technical Analysis
                 </h2>

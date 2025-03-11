@@ -18,19 +18,19 @@ export const Navbar = () => {
   return (
     <div className="h-16 px-4 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center justify-between">
       <div className="flex items-center space-x-2">
-        <BarChart2 className="h-6 w-6 text-blue-600 dark:text-blue-500" />
-        <span className="font-bold text-xl dark:text-white">Stonks AI</span>
+        <BarChart2 className="h-8 w-8 text-blue-600 dark:text-blue-500" />
+        <span className="font-bold text-xl dark:text-white">Stocks AI</span>
       </div>
       
       <div className="flex items-center space-x-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={toggleDarkMode}
-          className="rounded-full w-10 h-10 p-0"
-        >
-          {darkMode === 'true' ? <Sun size={20} /> : <Moon size={20} />}
-        </Button>
+        {/*<Button*/}
+        {/*  variant="ghost"*/}
+        {/*  size="sm"*/}
+        {/*  onClick={toggleDarkMode}*/}
+        {/*  className="rounded-full w-10 h-10 p-0"*/}
+        {/*>*/}
+        {/*  {darkMode === 'true' ? <Sun size={20} /> : <Moon size={20} />}*/}
+        {/*</Button>*/}
         
           {/* <div className="flex flex-col items-end">
             <span className="text-sm font-medium">{user?.name}</span>
