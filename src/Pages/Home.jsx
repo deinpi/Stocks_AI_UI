@@ -17,9 +17,10 @@ const Home = () => {
   const technical_url = import.meta.env.VITE_URL_TECHNICAL;
   const fetch_inputs_url = import.meta.env.VITE_URL_FETCH_INPUTS;
   const get_history_url = import.meta.env.VITE_URL_GET_HISTORY;
+  const get_remaining_requests_url = import.meta.env.VITE_URL_GET_REMAINING_REQUESTS;
 
   const navigate = useNavigate();
-  const {user, token} = useAuth();
+  const {user, token, remainingRequests, setRemaining } = useAuth();
   const {selectedAnalysis, setSelectedAnalysis, historyData, setHistoryData} = useDashboard();
 
   const [loading, setLoading] = useState(false);
@@ -115,6 +116,7 @@ const Home = () => {
       setData(res);
       setLoading(false);
       fetchAnalysesHistory();
+      fetchRemainingRequests();
 
     } catch (error) {
       console.error("Technical analysis request failed:", error);
@@ -137,6 +139,17 @@ const Home = () => {
 
     } catch (error) {
       console.error("Fetch analysis history failed:", error);
+    }
+  };
+
+  const fetchRemainingRequests = async () => {
+    try{
+      const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", token);
+      const res = response.data;
+      console.log(res);
+      setRemaining(res?.attempts);
+    } catch (error) {
+      console.error("Fetch remaining requests failed", error);
     }
   };
 

@@ -1,11 +1,8 @@
-import React, {createContext, useState, useEffect, useContext, useMemo} from 'react';
-import ApiController from "../controlers/ApiControler.jsx";
+import React, {createContext, useState, useContext, useMemo} from 'react';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const requestsUrl = import.meta.env.VITE_URL_GET_REMAINING_REQUESTS;
 
     const [user, setUser] = useState(() => {
         const storedUser = localStorage.getItem('user');
@@ -16,7 +13,7 @@ export const AuthProvider = ({ children }) => {
         localStorage.getItem('token') || null
     );
 
-    let [remainingRequests, setRemainingRequests] = useState(null);
+    const [remainingRequests, setRemainingRequests] = useState(null);
 
     const [darkMode, setDarkMode] = useState(() => {
         const saved = localStorage.getItem('darkMode');
@@ -52,7 +49,9 @@ export const AuthProvider = ({ children }) => {
             setDarkMode(newMode);
         },
         remainingRequests,
-        setRemainingRequests,
+        setRemaining: (newReq) =>{
+            setRemainingRequests(newReq--);
+        },
         deleteUser: () => {
             localStorage.removeItem('user');
             localStorage.removeItem('token');
