@@ -50,7 +50,7 @@ const Home = () => {
     if (!user) {
       navigate("/login");
     }
-  }, [user, navigate]);
+  }, []);
 
   useEffect(() => {
     const fetchInputs = async () => {
