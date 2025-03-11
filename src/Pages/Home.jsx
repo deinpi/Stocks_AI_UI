@@ -29,8 +29,8 @@ const Home = () => {
   const [tickerOptions, setTickerOptions] = useState([]);
 
   const [ticker, setTicker] = useState("");
-  const [exchange, setExchange] = useState("");
-  const [setup, setSetup] = useState("");
+  const [exchange, setExchange] = useState("NSE");
+  const [setup, setSetup] = useState("swing");
   const [formData, setFormData] = useState({
     stk: "", exc: "", stp: "",
   });

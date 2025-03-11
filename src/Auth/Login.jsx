@@ -9,7 +9,7 @@ import {Button} from "../UI/Button.jsx";
 const Login = () => {
   const navigation = useNavigate();
   // const {user,setUser}= useContext();
-  const {user, setUser, setToken} = useAuth();
+  const {user, setUser, setToken, setRemainingRequests} = useAuth();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const login_url = import.meta.env.VITE_URL_LOGIN;
   const [payload, setPayload] = useState({
@@ -23,8 +23,10 @@ const Login = () => {
       if (data) {
         setUser(payload.email);
         setToken(data.token);
+        setRemainingRequests(data.remaining_requests);
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", payload.email);
+
         navigation("/");
       }
     } catch (err) {
