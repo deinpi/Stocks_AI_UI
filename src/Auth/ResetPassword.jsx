@@ -81,7 +81,7 @@ const ResetPassword = () => {
               <Input
                 label="Password"
                 type="password"
-                placeholder="Enter new password"
+                placeholder="Enter a new password"
 
                 onChange={(e) => setNewPassword(e.target.value)}
                 fullWidth
