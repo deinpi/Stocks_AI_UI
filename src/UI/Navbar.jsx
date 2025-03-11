@@ -10,7 +10,6 @@ export const Navbar = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const menuRef = useRef(null);
 
-
   const handleLogout = () => {
     deleteUser();
     navigate('/login');

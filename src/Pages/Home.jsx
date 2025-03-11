@@ -72,6 +72,7 @@ const Home = () => {
 
     fetchInputs();
     fetchAnalysesHistory();
+    fetchRemainingRequests();
   }, []);
 
   const handleTickerChange = (e) => {
