@@ -41,7 +41,7 @@ const Login = () => {
       <div className="w-full max-w-md">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
           <div className="flex flex-col items-center space-y-2 mt-1">
-            <div className="flex items-center  space-x-1">
+            <div className="flex items-center space-x-1">
               <BarChart2 className="h-8 w-8 text-blue-600 dark:text-blue-500"/>
               <span className="text-2xl font-bold text-gray-900 dark:text-white">Stocks AI
             </span>
