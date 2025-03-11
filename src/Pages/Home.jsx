@@ -17,9 +17,10 @@ const Home = () => {
   const technical_url = import.meta.env.VITE_URL_TECHNICAL;
   const fetch_inputs_url = import.meta.env.VITE_URL_FETCH_INPUTS;
   const get_history_url = import.meta.env.VITE_URL_GET_HISTORY;
+  const get_remaining_requests_url = import.meta.env.VITE_URL_GET_REMAINING_REQUESTS;
 
   const navigate = useNavigate();
-  const {user, token} = useAuth();
+  const {user, token, remainingRequests, setRemaining } = useAuth();
   const {selectedAnalysis, setSelectedAnalysis, historyData, setHistoryData} = useDashboard();
 
   const [loading, setLoading] = useState(false);
@@ -29,8 +30,8 @@ const Home = () => {
   const [tickerOptions, setTickerOptions] = useState([]);
 
   const [ticker, setTicker] = useState("");
-  const [exchange, setExchange] = useState("");
-  const [setup, setSetup] = useState("");
+  const [exchange, setExchange] = useState("NSE");
+  const [setup, setSetup] = useState("swing");
   const [formData, setFormData] = useState({
     stk: "", exc: "", stp: "",
   });
@@ -71,6 +72,7 @@ const Home = () => {
 
     fetchInputs();
     fetchAnalysesHistory();
+    fetchRemainingRequests();
   }, []);
 
   const handleTickerChange = (e) => {
@@ -115,6 +117,7 @@ const Home = () => {
       setData(res);
       setLoading(false);
       fetchAnalysesHistory();
+      fetchRemainingRequests();
 
     } catch (error) {
       console.error("Technical analysis request failed:", error);
@@ -140,6 +143,17 @@ const Home = () => {
     }
   };
 
+  const fetchRemainingRequests = async () => {
+    try{
+      const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", token);
+      const res = response.data;
+      console.log(res);
+      setRemaining(res?.attempts);
+    } catch (error) {
+      console.error("Fetch remaining requests failed", error);
+    }
+  };
+
   return (<div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar/>
       <div className="flex flex-1 overflow-hidden">
@@ -148,7 +162,7 @@ const Home = () => {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
               <div className="flex items-center space-x-3 mb-8">
-                <LineChart className="h-8 w-8 text-indigo-600 :text-indigo-400"/>
+                <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-500"/>
                 <h2 className="text-2xl font-bold text-black dark:text-white">
                   Technical Analysis
                 </h2>

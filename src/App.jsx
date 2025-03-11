@@ -32,8 +32,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/forgotPass" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/forgotPassword" element={<ForgotPassword />} />
+            <Route path="/resetPassword" element={<ResetPassword />} />
           </Routes>
       </BrowserRouter>
     </div>

@@ -1,73 +1,103 @@
-import React,{useState,useContext} from "react";
-import { useNavigate,Link } from "react-router-dom";
+import React, {useState, useContext} from "react";
+import {useNavigate, Link} from "react-router-dom";
 import ApiController from "../controlers/ApiControler";
 import {useAuth} from "../contexts/AuthContext.jsx";
-import { TrendingUp } from 'lucide-react';
+import {BarChart2, Mail, Lock} from 'lucide-react';
+import {Input} from "../UI/Input.jsx";
+import {Button} from "../UI/Button.jsx";
 
 const Login = () => {
-  const navigation= useNavigate();
+  const navigation = useNavigate();
   // const {user,setUser}= useContext();
-  const {user,setUser,setToken}=useAuth();
+  const {user, setUser, setToken, setRemaining} = useAuth();
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  const login_url= import.meta.env.VITE_URL_LOGIN;
-  const [payload,setPayload]=useState({
-    email:"",
-    password:"",
+  const login_url = import.meta.env.VITE_URL_LOGIN;
+  const [payload, setPayload] = useState({
+    email: "",
+    password: "",
   });
 
-  const handleSubmit= async()=>
-  {
-    try{
-        const data=await ApiController(backendUrl,login_url,payload);
-        if(data)
-        {
-            setUser(payload.email);
-            setToken(data.token);
-            localStorage.setItem("token",data.token);
-            localStorage.setItem("user",payload.email);
-            navigation("/");
-        }
-    }
-    catch(err){
-       console.log(err);
+  const handleSubmit = async () => {
+    try {
+      const data = await ApiController(backendUrl, login_url, payload);
+      if (data) {
+        setUser(payload.email);
+        setToken(data.token);
+        setRemaining(data.remaining_requests);
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", payload.email);
+
+        navigation("/");
+      }
+    } catch (err) {
+      console.log(err);
     }
 
   }
 
 
   return (
-    <div className="flex flex-col items-center border justify-center h-screen">
-        <div className="flex gap-2">
-           <div className={`flex items-center space-x-2 `}>
-              <TrendingUp className="h-12 w-12 text-indigo-600 dark:text-indigo-400" />
-              <span className="text-3xl font-bold text-gray-900">StocksAI</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="w-full max-w-md">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4">
+          <div className="flex flex-col items-center space-y-2 mt-1">
+            <div className="flex items-center space-x-1">
+              <BarChart2 className="h-8 w-8 text-blue-600 dark:text-blue-500"/>
+              <span className="text-2xl font-bold text-gray-900 dark:text-white">Stocks AI
+            </span>
+            </div>
+            <div>
+              <p className="text-gray-600 dark:text-gray-400 mt-1">Sign in to your account</p>
+            </div>
+            <div className="space-y-4 m-2 w-3/4">
+              <Input
+                label="Email"
+                type="email"
+                placeholder="Enter your email"
+
+                onChange={(e) => setPayload((prev) => ({...prev, email: e.target.value}))}
+                fullWidth
+                leftIcon={<Mail size={16}/>}
+                required
+              />
+              <Input
+                label="Password"
+                type="password"
+                placeholder="Enter your password"
+
+                onChange={(e) => setPayload((prev) => ({...prev, password: e.target.value}))}
+                fullWidth
+                leftIcon={<Lock size={16}/>}
+                required
+              />
+            </div>
+            <div className="flex justify-end w-3/4">
+              <Link to="/forgotPassword" className="text-sm text-blue-600 dark:text-blue-400 hover:underline">
+                Forgot password?
+              </Link>
+            </div>
+            <div className="w-3/4">
+              <Button
+                type="submit"
+                fullWidth
+                onClick={handleSubmit}
+              >
+                Sign In
+              </Button>
+            </div>
+            <div className="m-2 text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Don't have an account?{' '}
+                <Link to="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
+                  Sign up
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
-        <h2 className="pt-5 pb-10 text-3xl font-bold">Sign in to your account</h2>
-        <div className="flex flex-col gap-5">
-          <div className="flex flex-col gap-2">
-          <input
-            type="text"
-            placeholder="Email"
-            className="px-3 py-1 font-thin text-sm text-gray-700 border rounded-lg w-[350px] h-[40px]"
-            onChange={(e) => setPayload((prev) => ({ ...prev, email: e.target.value }))}
-          />
-
-          <input
-           type="password"
-           placeholder="Passowrd"
-           className="px-3 py-1 font-thin text-gray-700 border rounded-lg w-[350px] h-[40px]"
-           onChange={(e) => setPayload((prev) => ({ ...prev, password: e.target.value }))}
-           />
-
-          </div>
-          <p className=" text-sm text-blue-800">Forgot Password ? <Link to={"/forgotPass"} >Click Here</Link></p>
-          <button onClick={handleSubmit} className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded-md ">Login</button>
-        </div>
-        <p className="py-5 text-sm text-blue-800">Don't have an account? <Link to={"/register"} >Register</Link></p>
-
+      </div>
     </div>
-  );
+  )
 };
 
 export default Login;
