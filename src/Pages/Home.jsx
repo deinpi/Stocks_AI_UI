@@ -51,7 +51,14 @@ const Home = () => {
   }, []);
 
   useEffect(() => {
-    const fetchInputs = async () => {
+
+
+    fetchInputs();
+    fetchAnalysesHistory();
+    fetchRemainingRequests();
+  }, []);
+
+  const fetchInputs = async () => {
       if (!user || !token) return; // Ensure user is logged in and token is available
 
       try {
@@ -66,11 +73,6 @@ const Home = () => {
         console.error("Error fetching input options:", error);
       }
     };
-
-    fetchInputs();
-    fetchAnalysesHistory();
-    fetchRemainingRequests();
-  }, []);
 
   const handleTickerChange = (e) => {
     const value = e.target.value.toUpperCase();
