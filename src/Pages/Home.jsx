@@ -44,52 +44,60 @@ const Home = () => {
 
   const [data, setData] = React.useState(null);
 
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+
   useEffect(() => {
     if (!user) {
-      navigate("/login");
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchInputs = async () => {
-      if (!user || !token) return; // Ensure user is logged in and token is available
-
-      try {
-        const response = await ApiController(backendUrl, fetch_inputs_url, {}, "get", token);
-        const data = await response;
-
-        // Set the fetched data into state
-        setExchangeOptions(data?.exchange);
-        setSetupOptions(data?.setup_types);
-        setTickerOptions(data?.stocks);
-      } catch (error) {
-        console.error("Error fetching input options:", error);
-      }
-    };
-
-    fetchInputs();
-    fetchAnalysesHistory();
-    fetchRemainingRequests();
-  }, []);
-
-  const handleTickerChange = (e) => {
-    const value = e.target.value.toUpperCase();
-    setTicker(value);
-    setTickerError('');
-
-    if (value.length > 0) {
-      const filtered = tickerOptions.filter((t) => t.includes(value));
-      setTickerSuggestions(filtered);
-      setShowSuggestions(true);
     } else {
-      setShowSuggestions(false);
+      fetchInputs();
+      fetchAnalysesHistory();
+      fetchRemainingRequests();
+    }
+    setIsCheckingAuth(false);
+
+  }, [user, navigate]);
+
+  const fetchInputs = async () => {
+    if (!user || !token) return; // Ensure user is logged in and token is available
+
+    try {
+      const response = await ApiController(backendUrl, fetch_inputs_url, {}, "get", token);
+      const data = await response;
+
+      // Set the fetched data into state
+      setExchangeOptions(data?.exchange);
+      setSetupOptions(data?.setup_types);
+      setTickerOptions(data?.stocks);
+    } catch (error) {
+      console.error("Error fetching input options:", error);
     }
   };
 
-  const handleSelectTicker = (selected) => {
-    setTicker(selected);
-    setShowSuggestions(false);
-    setTickerError('');
+  const fetchAnalysesHistory = async () => {
+    try {
+      const response = await ApiController(backendUrl, get_history_url, {}, "get", token);
+      const res = response.data;
+      const parsedData = res.map(item => ({
+        ...item, result: JSON.parse(item.result)
+      }));
+
+      setHistoryData(parsedData);
+      setSelectedAnalysis(parsedData[0])
+
+    } catch (error) {
+      console.error("Fetch analysis history failed:", error);
+    }
+  };
+
+  const fetchRemainingRequests = async () => {
+    try {
+      const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", token);
+      const res = response.data;
+      console.log(res);
+      setRemaining(res?.attempts);
+    } catch (error) {
+      console.error("Fetch remaining requests failed", error);
+    }
   };
 
   const handleAnalyze = async (e) => {
@@ -124,32 +132,29 @@ const Home = () => {
     }
   };
 
-  const fetchAnalysesHistory = async () => {
-    try {
-      const response = await ApiController(backendUrl, get_history_url, {}, "get", token);
-      const res = response.data;
-      const parsedData = res.map(item => ({
-        ...item, result: JSON.parse(item.result)
-      }));
+  const handleTickerChange = (e) => {
+    const value = e.target.value.toUpperCase();
+    setTicker(value);
+    setTickerError('');
 
-      setHistoryData(parsedData);
-      setSelectedAnalysis(parsedData[0])
-
-    } catch (error) {
-      console.error("Fetch analysis history failed:", error);
+    if (value.length > 0) {
+      const filtered = tickerOptions.filter((t) => t.includes(value));
+      setTickerSuggestions(filtered);
+      setShowSuggestions(true);
+    } else {
+      setShowSuggestions(false);
     }
   };
 
-  const fetchRemainingRequests = async () => {
-    try {
-      const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", token);
-      const res = response.data;
-      console.log(res);
-      setRemaining(res?.attempts);
-    } catch (error) {
-      console.error("Fetch remaining requests failed", error);
-    }
+  const handleSelectTicker = (selected) => {
+    setTicker(selected);
+    setShowSuggestions(false);
+    setTickerError('');
   };
+
+  if(isCheckingAuth) {
+    return <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">Loading...</div>
+  }
 
   return (<div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
     <Navbar/>

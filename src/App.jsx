@@ -10,6 +10,7 @@ import Home from "./Pages/Home"
 import { useAuth } from "./contexts/AuthContext.jsx";
 import axios from 'axios';
 import clsx from 'clsx'
+import PrivateRoute from "./contexts/PrivateRoute.jsx";
 
 function App() {
   axios.defaults.withCredentials = true;
@@ -30,7 +31,7 @@ function App() {
       />
       <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<PrivateRoute><Home /></PrivateRoute>} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
