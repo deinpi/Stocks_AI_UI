@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Login from "./Auth/Login"
 import Register  from "./Auth/Register";
+import TermsAndConditions from "./Pages/TermsAndConditions.jsx";
 import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
 import { ToastContainer } from 'react-toastify';
@@ -34,6 +35,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/forgotPassword" element={<ForgotPassword />} />
             <Route path="/resetPassword" element={<ResetPassword />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions/>}/>
           </Routes>
       </BrowserRouter>
     </div>
