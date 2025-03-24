@@ -20,7 +20,7 @@ const Home = () => {
   const get_remaining_requests_url = import.meta.env.VITE_URL_GET_REMAINING_REQUESTS;
 
   const navigate = useNavigate();
-  const {user, token, remainingRequests, setRemaining} = useAuth();
+  const {user, sessionToken, remainingRequests, setRemaining} = useAuth();
   const {selectedAnalysis, setSelectedAnalysis, historyData, setHistoryData} = useDashboard();
 
   const [loading, setLoading] = useState(false);
@@ -48,7 +48,7 @@ const Home = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    if (!user ||!sessionToken) {
     } else {
       fetchInputs();
       fetchAnalysesHistory();
@@ -59,10 +59,9 @@ const Home = () => {
   }, [user, navigate]);
 
   const fetchInputs = async () => {
-    if (!user || !token) return; // Ensure user is logged in and token is available
 
     try {
-      const response = await ApiController(backendUrl, fetch_inputs_url, {}, "get", token);
+      const response = await ApiController(backendUrl, fetch_inputs_url, {}, "get", sessionToken);
       const data = await response;
 
       // Set the fetched data into state
@@ -76,7 +75,7 @@ const Home = () => {
 
   const fetchAnalysesHistory = async () => {
     try {
-      const response = await ApiController(backendUrl, get_history_url, {}, "get", token);
+      const response = await ApiController(backendUrl, get_history_url, {}, "get", sessionToken);
       const res = response.data;
       const parsedData = res.map(item => ({
         ...item, result: JSON.parse(item.result)
@@ -92,9 +91,8 @@ const Home = () => {
 
   const fetchRemainingRequests = async () => {
     try {
-      const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", token);
+      const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", sessionToken);
       const res = response.data;
-      console.log(res);
       setRemaining(res?.attempts);
     } catch (error) {
       console.error("Fetch remaining requests failed", error);
@@ -118,7 +116,7 @@ const Home = () => {
       formData.stk = ticker;
       formData.exc = exchange;
       formData.stp = setup;
-      const response = await ApiController(backendUrl, technical_url, formData, "post", token);
+      const response = await ApiController(backendUrl, technical_url, formData, "post", sessionToken);
       const res = JSON.parse(response.data);
       setData(res);
       setLoading(false);
