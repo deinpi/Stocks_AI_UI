@@ -48,7 +48,7 @@ const Home = () => {
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    if (!user ||!sessionToken) {
     } else {
       fetchInputs();
       fetchAnalysesHistory();
@@ -59,7 +59,6 @@ const Home = () => {
   }, [user, navigate]);
 
   const fetchInputs = async () => {
-    if (!user || !sessionToken) return; // Ensure user is logged in and token is available
 
     try {
       const response = await ApiController(backendUrl, fetch_inputs_url, {}, "get", sessionToken);
@@ -94,7 +93,6 @@ const Home = () => {
     try {
       const response = await ApiController(backendUrl, get_remaining_requests_url, {}, "get", sessionToken);
       const res = response.data;
-      console.log(res);
       setRemaining(res?.attempts);
     } catch (error) {
       console.error("Fetch remaining requests failed", error);
