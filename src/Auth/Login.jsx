@@ -25,8 +25,9 @@ const Login = () => {
         setUser(payload.email);
         setToken(data.token);
         setRemaining(data.remaining_requests);
-        localStorage.setItem("token", data.token);
         localStorage.setItem("user", payload.email);
+        localStorage.setItem("session_token", data.session_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
 
         navigation("/");
       }

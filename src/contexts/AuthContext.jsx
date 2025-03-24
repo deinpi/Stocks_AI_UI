@@ -9,8 +9,8 @@ export const AuthProvider = ({children}) => {
     return storedUser ? storedUser : null;
   });
 
-  const [token, setToken] = useState(() =>
-    localStorage.getItem('token') || null
+  const [sessionToken, setToken] = useState(() =>
+    localStorage.getItem('session_token') || null
   );
 
   const [remainingRequests, setRemainingRequests] = useState(null);
@@ -32,13 +32,13 @@ export const AuthProvider = ({children}) => {
         setUser(null);
       }
     },
-    token,
+    sessionToken,
     setToken: (newToken) => {
       if (newToken) {
-        localStorage.setItem('token', newToken);
+        localStorage.setItem('session_token', newToken);
         setToken(newToken);
       } else {
-        localStorage.removeItem('token');
+        localStorage.removeItem('session_token');
         setToken(null);
       }
     },
@@ -54,12 +54,13 @@ export const AuthProvider = ({children}) => {
     },
     deleteUser: () => {
       localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      localStorage.removeItem('session_token');
+      localStorage.removeItem('refresh_token');
       setUser(null);
       setToken(null);
       setRemainingRequests(null);
     }
-  }), [user, token, darkMode, remainingRequests]);
+  }), [user, sessionToken, darkMode, remainingRequests]);
 
   return (
     <AuthContext.Provider value={value}>
