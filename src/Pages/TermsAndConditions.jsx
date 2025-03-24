@@ -1,5 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
+import {Footer} from "../UI/Footer.jsx";
 
 const TermsAndConditions = () => {
   const navigate = useNavigate(); // Hook to navigate between pages
@@ -62,19 +63,22 @@ const TermsAndConditions = () => {
 
         <p className="text-gray-600 dark:text-gray-400 mt-4">
           If you have any questions about these terms, please contact us at
-          support@stocksai.com.
+          support@stonkai.store.
         </p>
 
         {/* Go Back to Register Button */}
-        <div className="mt-6">
+
+        <div className="mt-6 flex justify-cente">
           <button
             onClick={() => navigate("/register")}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md mx-auto w-1/2"
           >
-            Go Back to Register
+            Back
           </button>
         </div>
+
       </div>
+      <Footer/>
     </div>
   );
 };

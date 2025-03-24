@@ -10,6 +10,7 @@ import {Button} from "../UI/Button";
 import {Sidebar} from "../UI/Sidebar";
 import {formatCurrency} from "../lib/Utils.jsx";
 import {useDashboard} from "../contexts/DashboardContext.jsx";
+import Footer from "../UI/Footer.jsx";
 
 const Home = () => {
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -152,139 +153,141 @@ const Home = () => {
     setTickerError('');
   };
 
-  if(isCheckingAuth) {
+  if (isCheckingAuth) {
     return <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">Loading...</div>
   }
 
-  return (<div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
-    <Navbar/>
-    <div className="flex flex-1 overflow-hidden">
-      <Sidebar/>
-      <div className="flex-1 overflow-y-auto p-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-            <div className="flex items-center space-x-3 mb-8">
-              <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-500"/>
-              <h2 className="text-2xl font-bold text-black dark:text-white">
-                Technical Analysis
-              </h2>
-            </div>
+  return (
+    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+      <Navbar/>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar/>
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+              <div className="flex items-center space-x-3 mb-8">
+                <LineChart className="h-6 w-6 text-blue-600 dark:text-blue-500"/>
+                <h2 className="text-2xl font-bold text-black dark:text-white">
+                  Technical Analysis
+                </h2>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <div className="relative">
-                <Input
-                  label="Ticker"
-                  placeholder="Enter stock ticker"
-                  value={ticker}
-                  error={tickerError}
-                  onChange={handleTickerChange}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="relative">
+                  <Input
+                    label="Ticker"
+                    placeholder="Enter stock ticker"
+                    value={ticker}
+                    error={tickerError}
+                    onChange={handleTickerChange}
+                    fullWidth
+                    leftIcon={<Search size={16}/>}
+                  />
+                  {showSuggestions && tickerSuggestions.length > 0 && (<div
+                    className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                    {tickerSuggestions.map((suggestion) => (<div
+                      key={suggestion}
+                      className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white"
+                      onClick={() => handleSelectTicker(suggestion)}
+                    >
+                      {suggestion}
+                    </div>))}
+                  </div>)}
+                </div>
+                <Select
+                  label="Exchange"
+                  options={exchangeOptions}
+                  value={exchange}
+                  onChange={setExchange}
                   fullWidth
-                  leftIcon={<Search size={16}/>}
                 />
-                {showSuggestions && tickerSuggestions.length > 0 && (<div
-                  className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg max-h-60 overflow-y-auto">
-                  {tickerSuggestions.map((suggestion) => (<div
-                    key={suggestion}
-                    className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-gray-900 dark:text-white"
-                    onClick={() => handleSelectTicker(suggestion)}
-                  >
-                    {suggestion}
-                  </div>))}
-                </div>)}
+
+                <Select
+                  label="Setup"
+                  options={setupOptions}
+                  value={setup}
+                  onChange={setSetup}
+                  fullWidth
+                />
               </div>
-              <Select
-                label="Exchange"
-                options={exchangeOptions}
-                value={exchange}
-                onChange={setExchange}
-                fullWidth
-              />
-
-              <Select
-                label="Setup"
-                options={setupOptions}
-                value={setup}
-                onChange={setSetup}
-                fullWidth
-              />
-            </div>
-            <div className="mt-6 flex justify-center">
-              <Button
-                onClick={handleAnalyze}
-                isLoading={loading}
-                leftIcon={<TrendingUp size={16}/>}
-                size="lg"
-              >
-                Analyze
-              </Button>
-            </div>
-          </div>
-
-          {selectedAnalysis && (<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-6 py-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                    {selectedAnalysis.user_input.ticker_name} ({selectedAnalysis.user_input.exchange})
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {setupTypeMapping[selectedAnalysis.user_input.setup_type]} Analysis
-                  </p>
-                </div>
-                <div
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${selectedAnalysis.result.Position === "Long" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"}`}
+              <div className="mt-6 flex justify-center">
+                <Button
+                  onClick={handleAnalyze}
+                  isLoading={loading}
+                  leftIcon={<TrendingUp size={16}/>}
+                  size="lg"
                 >
-                  {selectedAnalysis.result.Position}
-                </div>
+                  Analyze
+                </Button>
               </div>
             </div>
 
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    Entry Price
-                  </p>
-                  <p className="text-xl font-semibold text-gray-900 dark:text-white">
-                    {formatCurrency(selectedAnalysis.result.Entry)}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    Target Price
-                  </p>
-                  <p className="text-xl font-semibold text-green-600 dark:text-green-400">
-                    {formatCurrency(selectedAnalysis.result.Target)}
-                  </p>
-                </div>
-
-                <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                    Stop Loss
-                  </p>
-                  <p className="text-xl font-semibold text-red-600 dark:text-red-400">
-                    {formatCurrency(selectedAnalysis.result.Stoploss)}
-                  </p>
+            {selectedAnalysis && (<div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+              <div className="border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 px-6 py-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                      {selectedAnalysis.user_input.ticker_name} ({selectedAnalysis.user_input.exchange})
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                      {setupTypeMapping[selectedAnalysis.user_input.setup_type]} Analysis
+                    </p>
+                  </div>
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-medium ${selectedAnalysis.result.Position === "Long" ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"}`}
+                  >
+                    {selectedAnalysis.result.Position}
+                  </div>
                 </div>
               </div>
 
-              <div className="mb-6">
-                <h4 className="text-md font-medium mb-2 text-gray-900 dark:text-white">
-                  Analysis Reasoning
-                </h4>
-                <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
-                  <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
-                    {selectedAnalysis.result.Reason}
-                  </p>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                  <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                      Entry Price
+                    </p>
+                    <p className="text-xl font-semibold text-gray-900 dark:text-white">
+                      {formatCurrency(selectedAnalysis.result.Entry)}
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                      Target Price
+                    </p>
+                    <p className="text-xl font-semibold text-green-600 dark:text-green-400">
+                      {formatCurrency(selectedAnalysis.result.Target)}
+                    </p>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                      Stop Loss
+                    </p>
+                    <p className="text-xl font-semibold text-red-600 dark:text-red-400">
+                      {formatCurrency(selectedAnalysis.result.Stoploss)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="text-md font-medium mb-2 text-gray-900 dark:text-white">
+                    Analysis Reasoning
+                  </h4>
+                  <div className="bg-gray-50 dark:bg-gray-900/30 p-4 rounded-lg">
+                    <p className="text-sm leading-relaxed text-gray-800 dark:text-gray-200">
+                      {selectedAnalysis.result.Reason}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>)}
+            </div>)}
+          </div>
         </div>
       </div>
-    </div>
-  </div>);
+      <Footer classname="mt-3"/>
+    </div>);
 };
 
 export default Home;
